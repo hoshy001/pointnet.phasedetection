@@ -87,7 +87,7 @@ if opt.model != '':
 
 optimizer = optim.Adam(classifier.parameters(), lr=0.001, betas=(0.9, 0.999))
 scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.5)
-classifier.cuda()
+# classifier.cuda()
 num_batch = len(dataset) / opt.batchSize
 
 #output test loss and accuracy
@@ -111,7 +111,7 @@ for epoch in range(opt.nepoch):
         points, target = data
         target = target[:, 0]
         points = points.transpose(2, 1)
-        points, target = points.cuda(), target.cuda()
+        # points, target = points.cuda(), target.cuda()
         optimizer.zero_grad()
         classifier = classifier.train()
         pred, trans, trans_feat = classifier(points)
@@ -144,7 +144,7 @@ for epoch in range(opt.nepoch):
             points, target = data
             target = target[:, 0]
             points = points.transpose(2, 1)
-            points, target = points.cuda(), target.cuda()
+            # points, target = points.cuda(), target.cuda()
             classifier = classifier.eval()
             pred, _, _ = classifier(points)
             loss = F.nll_loss(pred, target)
@@ -185,7 +185,7 @@ for i,data in tqdm(enumerate(testdataloader, 0)):
     points, target = data
     target = target[:, 0]
     points = points.transpose(2, 1)
-    points, target = points.cuda(), target.cuda()
+    # points, target = points.cuda(), target.cuda()
     classifier = classifier.eval()
     pred, _, _ = classifier(points)
     pred_choice = pred.data.max(1)[1]
