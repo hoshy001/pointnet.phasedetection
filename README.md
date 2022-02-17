@@ -73,7 +73,7 @@ The PointNet architecture is taken from [[1](https://arxiv.org/abs/1612.00593)],
 ### Prerequisites
 
   ```sh
-  pip install -m requirements.txt
+  pip install -r requirements.txt
   ```
 
 ### Data Downloads
