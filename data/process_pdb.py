@@ -138,6 +138,7 @@ if __name__ == "__main__":
     parser.add_argument('-nt',
         '--ntrans', type=int, default=1, help='number of random data augmentation (translation + rotation) for each point cloud')
     opt = parser.parse_args()
+    opt.category = opt.category.lower()
     
     if not os.path.exists('point_clouds/%s/points' % opt.category):
         os.makedirs('point_clouds/%s/points' % opt.category)
