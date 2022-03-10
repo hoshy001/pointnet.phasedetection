@@ -7,27 +7,27 @@ from tqdm import tqdm
 
 class NetPts(object):
     def __init__(self, category, num_samples, trans, rot):
-        self.category = category.upper()
+        self.category = category
         self.num_samples = num_samples
         self.trans = trans
         self.rot = rot
         self.dim = np.linspace(0, 1, np.random.randint(20, 30))
-        self.net_param = {'DD':{'period': 2 * np.pi,
+        self.net_param = {'dd':{'period': 2 * np.pi,
                                 't': 0.6 + 0.3 * np.random.rand(), # 0.6 <= t <= 0.9
                                 'fp': self.dd_pos,
                                 'fn': self.dd_neg
                                },
-                         'DG':{'period': 2 * np.pi,
+                         'dg':{'period': 2 * np.pi,
                                't': 0.9 + 0.3 * np.random.rand(), # 0.9 <= t <= 1.2
                                'fp': self.dg_pos,
                                'fn': self.dg_neg
                               },
-                         'P':{'period': 4 * np.pi,
+                         'p':{'period': 4 * np.pi,
                               't': 0.4 * np.random.rand(), # 0 <= t <= 0.4
                               'fp': self.p_pos,
                               'fn': self.p_neg
                              },
-                         'SG':{'period': 2 * np.pi,
+                         'sg':{'period': 2 * np.pi,
                                't': 0.6 + 0.4 * np.random.rand(), # 0.6 <= t <= 1.0
                                'fp': self.sg_pos,
                                'fn': self.sg_neg
@@ -211,6 +211,7 @@ if __name__ == "__main__":
     parser.add_argument('-t', '--rand_trans', action='store_true', help='whether to apply random periodic translation')
     parser.add_argument('-r', '--rand_rot', action='store_true', help='whether to apply random periodic rotation')
     opt = parser.parse_args()
+    opt.category = opt.category.lower()
     
     print('Generating point clouds of %s structure...' % opt.category)
     tic = time.perf_counter()
