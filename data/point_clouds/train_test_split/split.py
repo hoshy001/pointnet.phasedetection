@@ -31,7 +31,7 @@ def __main__():
     n_class = len(phases)
     train_id, test_id = (np.zeros((n_train, n_class)),
                          np.zeros((n_test, n_class)))
-    data_train, data_test, data_val = [], [], []
+    data_train, data_test = [], []
     for idx, cls in enumerate(phases):
         cls_idx_train = random.sample(range(1, n_points + 1), n_train)
         cls_idx_test = [i for i in range(1, n_points + 1) if i not in cls_idx_train]
