@@ -1,6 +1,7 @@
 import argparse
 import os
 import sys
+sys.path.append("..")
 import random
 
 import numpy as np
