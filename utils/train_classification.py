@@ -1,7 +1,6 @@
 import argparse
 import os
 import sys
-sys.path.append("..")
 import random
 
 import numpy as np
@@ -126,7 +125,7 @@ if __name__ == '__main__':
             optimizer.step()
             pred_choice = pred.data.max(1)[1]
             correct = pred_choice.eq(target.data).cpu().sum()
-            
+
             # write out the train loss and accuracy
             acc_class = []
             for m in range(num_classes):
@@ -136,13 +135,10 @@ if __name__ == '__main__':
                 else:
                     acc_m = np.sum((pred_choice.data.cpu().numpy().ravel()[ind_m] == m))/np.sum(ind_m)
                 acc_class.append(acc_m)
-            
-            print('[%d: %d/%d] train loss: %.3f accuracy: %.3f' %
-                  (epoch, i, num_batch, loss.item(), correct.item() / float(opt.batchSize)))
-    
-            ftrain.write(np.str(epoch) + ' ' + np.str(loss.item()) + ' ' + 
-                         np.str(correct.item()/float(opt.batchSize)) + '\n')
-            
+
+            print(f"[{epoch}: {i}/{int(num_batch)}] train loss: {loss.item()} accuracy: {correct.item()/float(opt.batchSize):.3f}")
+            ftrain.write(f"{epoch} {loss.item()} {correct.item() / float(opt.batchSize)} \n")
+
             if i % (num_batch+1) == 0:
                 j, data = next(enumerate(testdataloader, 0))
                 points, target = data
@@ -154,7 +150,7 @@ if __name__ == '__main__':
                 loss = F.nll_loss(pred, target)
                 pred_choice = pred.data.max(1)[1]
                 correct = pred_choice.eq(target.data).cpu().sum()
-                
+
                 # write out the test loss and accuracy
                 acc_class = []
                 for m in range(num_classes):
@@ -164,12 +160,10 @@ if __name__ == '__main__':
                     else:
                         acc_m = np.sum((pred_choice.data.cpu().numpy().ravel()[ind_m] == m))/np.sum(ind_m)
                     acc_class.append(acc_m)
-    
-                print('[%d: %d/%d] %s loss: %f accuracy: %.3f' % 
-                      (epoch, i, num_batch, blue('test'), loss.item(),             
-                       correct.item()/float(opt.batchSize)))
-                ftest.write(np.str(epoch) + ' ' + np.str(loss.item()) + ' ' + 
-                            np.str(correct.item()/float(opt.batchSize)) + '\n')
+
+                print(f"[{epoch}: {i}/{int(num_batch)}] {blue('test')} loss: {loss.item()} accuracy: {correct.item()/float(opt.batchSize):.3f}")
+                ftest.write(f"{epoch} {loss.item()} {correct.item() / float(opt.batchSize)} \n")
+
         scheduler.step()
         torch.save(classifier.state_dict(), '%s/pts_%s/cls_model_%d.pth' % (opt.outf, str(opt.num_points), epoch))
     
