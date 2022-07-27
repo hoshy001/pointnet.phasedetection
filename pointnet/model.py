@@ -6,6 +6,7 @@ import torch.utils.data
 from torch.autograd import Variable
 import numpy as np
 import torch.nn.functional as F
+import random
 
 class STN3d(nn.Module):
     def __init__(self):
