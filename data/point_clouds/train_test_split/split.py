@@ -18,7 +18,7 @@ class Params:
         },
     )
     phases: tuple = field(
-        default=('lam','hpc','hpl','bcc','dis','sg','dg','dd','p'),
+        default=('lam','hpc','hpl','bcc','dis','dg'),
         metadata={
             "help": 'a tuple of names of different possible phases'
         },
