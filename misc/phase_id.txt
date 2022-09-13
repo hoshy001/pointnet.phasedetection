@@ -1,9 +1,6 @@
 BCC 0
-DD 1
-DG 2
-DIS 3
-HPC 4
-HPL 5
-LAM 6
-P 7
-SG 8
+DG 1
+DIS 2
+HPC 3
+HPL 4
+LAM 5
