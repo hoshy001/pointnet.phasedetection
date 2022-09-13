@@ -134,7 +134,7 @@ class Pdb2Pts(object):
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--category', type=str, required=True, help='category (phase) name: sg (single gyroid), dg (double gyroid), dd (double diamond), p (plumber\'s nightmare')
+    parser.add_argument('-c', '--category', type=str, required=True, help='category (phase) name: lam (lamellar), hpc (hexagonally packed cylinder), hpl (hexagonally perforated lamellar), bcc (body-centered cubic), dis (disordered states), sg (single gyroid), dg (double gyroid), dd (double diamond), p (plumber\'s nightmare')
     parser.add_argument('-t', '--rand_trans', action='store_true', help='whether to apply random periodic translation')
     parser.add_argument('-r', '--rand_rot', action='store_true', help='whether to apply random periodic rotation')
     parser.add_argument('-nt',
