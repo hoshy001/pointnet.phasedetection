@@ -12,7 +12,21 @@ class Pdb2Pts(object):
         self.category = category
         self.trans = trans
         self.rot = rot
-                 
+
+    def apply_periodic_to_pos(self, pos, Lx, Ly, Lz):
+        """
+        Apply periodic boundary conditions
+        """
+        invLx, invLy, invLz = (1.0/Lx, 1.0/Ly, 1.0/Lz)
+        X, Y, Z = pos[:, 0], pos[:, 1], pos[:, 2]
+        scale_factor = np.floor(Z * invLz)
+        Z -= scale_factor * Lz
+        scale_factor = np.floor(Y * invLy)
+        Y -= scale_factor * Ly
+        scale_factor = np.floor(X * invLx)
+        X -= scale_factor * Lx
+        return pos
+
     def replicate_box(self, increment):
         """
         Input an increment array, e.g. [-1, 0, 1] for replicating the box three times in each dimension
@@ -67,23 +81,13 @@ class Pdb2Pts(object):
 
     def rand_periodic_translation(self, pos, Lx, Ly, Lz):
 
-        X, Y, Z = pos[:, 0], pos[:, 1], pos[:, 2]
-
-        X[X > Lx] -= Lx
-        Y[Y > Ly] -= Ly
-        Z[Z > Lz] -= Lz
-        pos = np.array([X, Y, Z]).T
-
         vec_trans = np.array([np.random.uniform(0, Lx * 0.5), 
                               np.random.uniform(0, Ly * 0.5), 
                               np.random.uniform(0, Lz * 0.5)])
         pos += vec_trans
-        X, Y, Z = pos[:,0], pos[:,1], pos[:,2]
-        X[X > Lx] -= Lx
-        Y[Y > Ly] -= Ly
-        Z[Z > Lz] -= Lz
+        pos = self.apply_periodic_to_pos(pos, Lx, Ly, Lz)
         
-        return np.array([X, Y, Z]).T
+        return pos
 
 
 
@@ -98,6 +102,7 @@ class Pdb2Pts(object):
             oxygen = universe.select_atoms('name O')
             Lx, Ly, Lz = universe.dimensions[:3]
             pos_oxygen = oxygen.positions
+            pos_oxygen = self.apply_periodic_to_pos(pos_oxygen, Lx, Ly, Lz)
             
             for _ in range(ntrans):   
                 # Apply a random periodic translation around a vector with random x, y, and z components that are <= period
