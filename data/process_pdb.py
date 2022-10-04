@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 class Pdb2Pts(object):
     def __init__(self, category, trans, rot):
-                 
+
         self.category = category
         self.trans = trans
         self.rot = rot
@@ -76,39 +76,36 @@ class Pdb2Pts(object):
         # Construct the rotation matrix  ( V Transpose(V) - I ) R.
 
         M = (np.outer(V, V) - np.eye(3)).dot(R)
-        
+
         return M
 
     def rand_periodic_translation(self, pos, Lx, Ly, Lz):
 
-        vec_trans = np.array([np.random.uniform(0, Lx * 0.5), 
-                              np.random.uniform(0, Ly * 0.5), 
+        vec_trans = np.array([np.random.uniform(0, Lx * 0.5),
+                              np.random.uniform(0, Ly * 0.5),
                               np.random.uniform(0, Lz * 0.5)])
         pos += vec_trans
         pos = self.apply_periodic_to_pos(pos, Lx, Ly, Lz)
-        
+
         return pos
 
-
-
     #pdb file must contain 1 frame
-    
-    def gen_pts_from_pdb(self, pdb_path, ntrans):     
+    def gen_pts_from_pdb(self, pdb_path, ntrans):
         file_list = os.listdir(pdb_path)
-        pdb_files = [i for i in file_list if 'pdb' in i] 
+        pdb_files = [i for i in file_list if 'pdb' in i]
         idx = 1
-        for i in tqdm(range(1, len(pdb_files) + 1)): 
+        for i in tqdm(range(1, len(pdb_files) + 1)):
             universe = mda.Universe(pdb_path + '/' + pdb_files[i - 1])
             oxygen = universe.select_atoms('name O')
             Lx, Ly, Lz = universe.dimensions[:3]
             pos_oxygen = oxygen.positions
             pos_oxygen = self.apply_periodic_to_pos(pos_oxygen, Lx, Ly, Lz)
-            
-            for _ in range(ntrans):   
+
+            for _ in range(ntrans):
                 # Apply a random periodic translation around a vector with random x, y, and z components that are <= period
-                if self.trans:       
-                    pos_oxygen = self.rand_periodic_translation(pos_oxygen, Lx, Ly, Lz)               
-                
+                if self.trans:
+                    pos_oxygen = self.rand_periodic_translation(pos_oxygen, Lx, Ly, Lz)
+
                 # Replicate box so that the transformed coordinates can be wrapped into the original bounding box
                 if self.rot:
                     orig_pos = pos_oxygen
@@ -123,20 +120,20 @@ class Pdb2Pts(object):
 
                 file_name = f'coord_O_{opt.category}_{idx}'
                 idx += 1
-                
+
                 # Save .pts files
                 pts_file = open('point_clouds/' + opt.category + '/points/' + file_name + '.pts', 'w')
                 for k in range(pos_oxygen.shape[0]):
                     pts_file.write(str(pos_oxygen[k, 0]) + ' ' + str(pos_oxygen[k, 1]) + ' ' + str(pos_oxygen[k, 2]) + '\n')
                 pts_file.close()
-                
+
                 # Save .seg files
                 seg_file = open('point_clouds/' + opt.category + '/points_label/' + file_name + '.seg', 'w')
                 for k in range(pos_oxygen.shape[0]):
                     seg_file.write('1\n')
                 seg_file.close()
-        return 
-    
+        return
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--category', type=str, required=True, help='category (phase) name: lam (lamellar), hpc (hexagonally packed cylinder), hpl (hexagonally perforated lamellar), bcc (body-centered cubic), dis (disordered states), sg (single gyroid), dg (double gyroid), dd (double diamond), p (plumber\'s nightmare')
@@ -146,19 +143,19 @@ if __name__ == "__main__":
         '--ntrans', type=int, default=1, help='number of random data augmentation (translation + rotation) for each point cloud')
     opt = parser.parse_args()
     opt.category = opt.category.lower()
-    
+
     if not os.path.exists('point_clouds/%s/points' % opt.category):
         os.makedirs('point_clouds/%s/points' % opt.category)
     if not os.path.exists('point_clouds/%s/points_label' % opt.category):
         os.makedirs('point_clouds/%s/points_label' % opt.category)
-                  
+
     pdb_path = 'raw/pdb/' + opt.category
 
-    print('Processing pdb files of %s structure...' % opt.category)   
-    
+    print('Processing pdb files of %s structure...' % opt.category)
+
     print(opt.rand_trans)
     print(opt.rand_rot)
-    
+
     tic = time.perf_counter()
     Pdb2Pts(opt.category, opt.rand_trans, opt.rand_rot).gen_pts_from_pdb(pdb_path, opt.ntrans)
     toc = time.perf_counter()
