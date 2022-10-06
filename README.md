@@ -105,7 +105,12 @@ The PointNet architecture is taken from [[1](https://arxiv.org/abs/1612.00593)],
      -c: name of the network phases (DD, DG, P, or SG)\
      -t: perform random translations of point clouds wrapped by periodic boundary conditions\
      -r: perform random uniform rotations of point clouds wrapped by periodic boundary conditions\
-     -n: total number of point clouds (train + test) to generate 
+     -n: total number of point clouds (train + test) to generate
+   - Generate train/test split json files:
+     ```sh
+     cd ./data/point_clouds/train_test_split
+     python split.py
+     ```
 ### Training:
   - Train the PointNet using preprocessed data:
      ```sh
