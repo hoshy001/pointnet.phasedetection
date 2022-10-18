@@ -103,7 +103,7 @@ class Pdb2Pts(object):
             orig_pos_oxygen = oxygen.positions
             orig_pos_oxygen = self.apply_periodic_to_pos(orig_pos_oxygen, Lx, Ly, Lz)
 
-            log_file.write(pdb_files[i-1] + '\n')
+            log_file.write(pdb_files[i-1] + ' ' + str(orig_pos_oxygen.shape[0]) + '\n')
 
             for _ in range(ntrans):
                 pos_oxygen = orig_pos_oxygen
@@ -135,6 +135,7 @@ class Pdb2Pts(object):
                     pts_file.write(str(pos_oxygen[k, 0]) + ' ' + str(pos_oxygen[k, 1]) + ' ' + str(pos_oxygen[k, 2]) + '\n')
                 pts_file.close()
 
+                # Save .xyz files
                 xyz_file = open('point_clouds/' + opt.category + '/xyz/' + file_name + '.xyz', 'w')
                 xyz_file.write(str(pos_oxygen.shape[0]) + '\n\n')
                 for k in range(pos_oxygen.shape[0]):
